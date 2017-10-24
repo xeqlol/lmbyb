@@ -19,15 +19,6 @@ commands = {
 	}
 }
 
-
-
-
-
-
-
-
-
-
 for channel in config['channels']:
 	for command in commands:
 		commands[command][channel] = {}

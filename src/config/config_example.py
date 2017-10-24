@@ -5,7 +5,7 @@ config = {
 	# details required to login to twitch IRC server
 	'server': 'irc.twitch.tv',
 	'port': 6667,
-	'username': 'twitch_username',
+	'username': 'something',
 	'oauth_password': 'oauth:', # get this from http://twitchapps.com/tmi/
 	
 	# channel to join
@@ -13,7 +13,6 @@ config = {
 
 	# if set to true will display any data received
 	'debug': False,
-
 
 	'cron': {
 		'#channel_one': {

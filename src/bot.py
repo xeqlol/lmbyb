@@ -1,9 +1,3 @@
-"""
-Simple IRC Bot for Twitch.tv
-
-Developed by Aidan Thomson <aidraj0@gmail.com>
-"""
-
 import lib.irc as irc_
 from lib.functions_general import *
 import lib.functions_commands as commands

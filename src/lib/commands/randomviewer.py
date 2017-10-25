@@ -1,3 +1,3 @@
 def randomviewer(irc, channel):
-	print(channel)
-	irc.sock.send('WHO %s' % channel)
+    print(channel)
+    irc.sock.send('WHO %s' % channel)

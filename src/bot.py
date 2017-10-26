@@ -62,7 +62,7 @@ class Letmebeyourbot:
                                 commands.update_last_used(command, channel)
 
                                 if result:
-                                    resp = '(%s) > %s' % (username, result)
+                                    resp = '/me (%s) > %s' % (username, result)
                                     pbot(resp, channel)
                                     irc.send_message(channel, resp)
 
@@ -79,7 +79,7 @@ class Letmebeyourbot:
                                  )
                             commands.update_last_used(command, channel)
 
-                            resp = '(%s) > %s' % (username, commands.get_return(command))
+                            resp = '/me (%s) > %s' % (username, commands.get_return(command))
                             commands.update_last_used(command, channel)
 
                             pbot(resp, channel)

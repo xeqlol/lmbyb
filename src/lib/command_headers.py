@@ -1,23 +1,25 @@
 from src.config.config import *
 
+
 commands = {
     '!test': {
-        'limit': 30,
+        'limit': 0,
         'return': 'This is a test!'
     },
 
     '!randomemote': {
-        'limit': 180,
+        'limit': 0,
         'argc': 0,
         'return': 'command'
     },
 
     '!wow': {
-        'limit': 30,
+        'limit': 0,
         'argc': 3,
         'return': 'command'
     }
 }
+
 
 for channel in config['channels']:
     for command in commands:

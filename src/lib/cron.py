@@ -1,15 +1,15 @@
-import time
 from src.config.config import *
 from src.lib.functions_general import *
 
 
-class cron:
+class Cron:
     def __init__(self, irc, channel):
         self.messages = config['cron'][channel]['cron_messages']
         self.run_time = config['cron'][channel]['run_time']
         self.last_index = 0
         self.irc = irc
         self.channel = channel
+        self.last_ran = 0
 
     def get_next_message(self):
         next_index = self.last_index + 1

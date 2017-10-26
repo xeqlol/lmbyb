@@ -11,9 +11,6 @@ config = {
 	# channel to join
 	'channels': ['#channel_one', '#channel_two'],
 
-	# if set to true will display any data received
-	'debug': False,
-
 	'cron': {
 		'#channel_one': {
 			'run_cron': False, 	# set this to false if you want don't want to run the cronjob but you want to preserve the messages etc

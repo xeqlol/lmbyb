@@ -1,5 +1,6 @@
 import socket, re, time, sys
 from src.lib.functions_general import *
+import src.config.config as config
 import src.lib.cron as cron
 import _thread
 
@@ -41,6 +42,8 @@ class irc:
             return True
 
     def send_message(self, channel, message):
+        if config.config['me_mod']:
+            message = '/me %s' % message
         self.sock.send(bytes('PRIVMSG %s :%s\n' % (channel, message), 'utf-8'))
 
     def get_irc_socket_object(self):
@@ -71,7 +74,7 @@ class irc:
         for channel in self.config['channels']:
             if channel in self.config['cron']:
                 if self.config['cron'][channel]['run_cron']:
-                    _thread.start_new_thread(cron.cron(self, channel).run, ())
+                    _thread.start_new_thread(cron.Cron(self, channel).run, ())
 
         self.join_channels(self.channels_to_string(self.config['channels']))
 

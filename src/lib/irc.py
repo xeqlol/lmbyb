@@ -41,7 +41,7 @@ class irc:
             return True
 
     def send_message(self, channel, message):
-        self.sock.send(('PRIVMSG %s :%s\n' % (channel, message.encode('utf-8'))).encode())
+        self.sock.send(bytes('PRIVMSG %s :%s\n' % (channel, message), 'utf-8'))
 
     def get_irc_socket_object(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -57,9 +57,9 @@ class irc:
 
         sock.settimeout(None)
 
-        sock.send(('USER %s\r\n' % self.config['username']).encode())
-        sock.send(('PASS %s\r\n' % self.config['oauth_password']).encode())
-        sock.send(('NICK %s\r\n' % self.config['username']).encode())
+        sock.send(bytes('USER %s\r\n' % self.config['username'], 'utf-8'))
+        sock.send(bytes('PASS %s\r\n' % self.config['oauth_password'], 'utf-8'))
+        sock.send(bytes('NICK %s\r\n' % self.config['username'], 'utf-8'))
 
         if self.check_login_status(sock.recv(1024)):
             pp('Login successful.')
@@ -82,10 +82,10 @@ class irc:
 
     def join_channels(self, channels):
         pp('Joining channels %s.' % channels)
-        self.sock.send(('JOIN %s\r\n' % channels).encode())
+        self.sock.send(bytes('JOIN %s\r\n' % channels, 'utf-8'))
         pp('Joined channels.')
 
     def leave_channels(self, channels):
         pp('Leaving chanels %s,' % channels)
-        self.sock.send(('PART %s\r\n' % channels).encode())
+        self.sock.send(bytes('PART %s\r\n' % channels, 'utf-8'))
         pp('Left channels.')

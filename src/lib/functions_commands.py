@@ -2,7 +2,7 @@ import time
 
 from src.config.config import *
 from src.lib.commands import *
-from src.lib.command_headers import *
+from src.lib.commands_settings import *
 
 import importlib
 

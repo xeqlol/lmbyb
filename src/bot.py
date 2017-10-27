@@ -3,7 +3,7 @@ from src.lib.functions_general import *
 import src.lib.functions_commands as commands
 
 
-class Letmebeyourbot:
+class Bot:
     def __init__(self, config):
         self.config = config
         self.irc = irc_.irc(config)

@@ -10,10 +10,4 @@ command_headers = {
         'limit': 0,
         'return': 'This is a test!'
     },
-
-    '!roll': {
-        'limit': 0,
-        'argc': 0,
-        'return': 'command'
-    }
 }

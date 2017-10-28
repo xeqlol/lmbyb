@@ -9,11 +9,22 @@ class irc:
     def __init__(self, config):
         self.config = config
 
-    def check_for_message(self, data):
-        if re.match(
-                r'^:[a-zA-Z0-9_]+\![a-zA-Z0-9_]+@[a-zA-Z0-9_]+(\.tmi\.twitch\.tv|\.testserver\.local) PRIVMSG #[a-zA-Z0-9_]+ :.+$',
-                data.decode('utf-8')):
+    def check_for_message(self, b_message):
+        message = b_message.decode('utf-8')
+        if message[0] == '@':
+            arg_regx = "([^=;]*)=([^ ;]*)"
+            arg_regx = re.compile(arg_regx, re.UNICODE)
+            args = dict(re.findall(arg_regx, message[1:]))
+            regex = ('^@[^ ]* :([^!]*)![^!]*@[^.]*.tmi.twitch.tv'  # username
+                     ' PRIVMSG #([^ ]*)'  # channel
+                     ' :(.*)')  # message
+            regex = re.compile(regex, re.UNICODE)
+            match = re.search(regex, message)
+            #args['username'] = match.group(1)
+            #args['channel'] = match.group(2)
+            #args['message'] = match.group(3)
             return True
+        return False
 
     def check_is_command(self, message, valid_commands):
         for command in valid_commands:
@@ -30,9 +41,12 @@ class irc:
 
     def get_message(self, data):
         return {
-            'channel': re.findall(r'^:.+\![a-zA-Z0-9_]+@[a-zA-Z0-9_]+.+ PRIVMSG (.*?) :', data.decode('utf-8'))[0],
-            'username': re.findall(r'^:([a-zA-Z0-9_]+)\!', data.decode('utf-8'))[0],
-            'message': re.findall(r'PRIVMSG #[a-zA-Z0-9_]+ :(.+)', data.decode('utf-8'))[0]
+            'channel': re.findall(r'PRIVMSG (.*?) :', data.decode('utf-8'))[0],
+            'username': re.findall(r'display-name=(.*?);', data.decode('utf-8'))[0],
+            'message': re.findall(r'PRIVMSG #[a-zA-Z0-9_]+ :(.+)', data.decode('utf-8'))[0],
+            'is_broadcaster': True if '1' in re.findall(r'broadcaster\/(0|1);', data.decode('utf-8'))  else False,
+            'is_moderator': True if '1' in re.findall(r'moderator\/(0|1);', data.decode('utf-8')) else False,
+            'is_subscriber': True if '1' in re.findall(r'subscriber\/(0|1);', data.decode('utf-8')) else False,
         }
 
     def check_login_status(self, data):
@@ -77,6 +91,7 @@ class irc:
                     _thread.start_new_thread(cron.Cron(self, channel).run, ())
 
         self.join_channels(self.channels_to_string(self.config['channels']))
+        self.set_cap_requests()
 
         return sock
 
@@ -92,3 +107,14 @@ class irc:
         pp('Leaving chanels %s,' % channels)
         self.sock.send(bytes('PART %s\r\n' % channels, 'utf-8'))
         pp('Left channels.')
+
+    def set_cap_requests(self):
+        if self.config['cap_reqs']['membership']:
+            self.sock.send(bytes('CAP REQ :twitch.tv/membership\r\n', 'utf-8'))
+            pp('Request for membership')
+        if self.config['cap_reqs']['tags']:
+            self.sock.send(bytes('CAP REQ :twitch.tv/tags\r\n', 'utf-8'))
+            pp('Request for tags')
+        if self.config['cap_reqs']['commands']:
+            self.sock.send(bytes('CAP REQ :twitch.tv/commands\r\n', 'utf-8'))
+            pp('Request for commands')

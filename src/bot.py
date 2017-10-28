@@ -21,8 +21,10 @@ class Bot:
                 pp('Connection was lost, reconnecting.')
                 sock = self.irc.get_irc_socket_object()
 
+            #data = str(b_data, 'utf-8')
+
             if config['debug']:
-                print(data)
+                print('debug: %s' % data)
 
             # check for ping, reply with pong
             irc.check_for_ping(data)
@@ -33,6 +35,9 @@ class Bot:
                 channel = message_dict['channel']
                 message = message_dict['message']
                 username = message_dict['username']
+
+                # make access levels for commands
+                #is_broadcaster = message_dict['is_broadcaster']
 
                 ppi(channel, message, username)
 
@@ -62,7 +67,7 @@ class Bot:
                                 commands.update_last_used(command, channel)
 
                                 if result:
-                                    resp = '(%s) > %s' % (username, result)
+                                    resp = '@%s > %s' % (username, result)
                                     pbot(resp, channel)
                                     irc.send_message(channel, resp)
 
@@ -79,7 +84,7 @@ class Bot:
                                  )
                             commands.update_last_used(command, channel)
 
-                            resp = '(%s) > %s' % (username, commands.get_return(command))
+                            resp = '@%s > %s' % (username, commands.get_return(command))
                             commands.update_last_used(command, channel)
 
                             pbot(resp, channel)

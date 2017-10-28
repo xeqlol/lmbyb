@@ -20,9 +20,6 @@ class irc:
                      ' :(.*)')  # message
             regex = re.compile(regex, re.UNICODE)
             match = re.search(regex, message)
-            #args['username'] = match.group(1)
-            #args['channel'] = match.group(2)
-            #args['message'] = match.group(3)
             return True
         return False
 
@@ -44,8 +41,8 @@ class irc:
             'channel': re.findall(r'PRIVMSG (.*?) :', data.decode('utf-8'))[0],
             'username': re.findall(r'display-name=(.*?);', data.decode('utf-8'))[0],
             'message': re.findall(r'PRIVMSG #[a-zA-Z0-9_]+ :(.+)', data.decode('utf-8'))[0],
-            'is_broadcaster': True if '1' in re.findall(r'broadcaster\/(0|1);', data.decode('utf-8'))  else False,
-            'is_moderator': True if '1' in re.findall(r'moderator\/(0|1);', data.decode('utf-8')) else False,
+            'is_broadcaster': True if 'broadcaster/1' in  data.decode('utf-8') else False,
+            'is_moderator': True if 'moderator/1' in  data.decode('utf-8') else False,
             'is_subscriber': True if '1' in re.findall(r'subscriber\/(0|1);', data.decode('utf-8')) else False,
         }
 

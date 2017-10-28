@@ -1,6 +1,7 @@
 import src.lib.irc as irc_
 from src.lib.functions_general import *
 import src.lib.functions_commands as commands
+from src.lib.commands._commands_utils import *
 
 
 class Bot:
@@ -37,7 +38,7 @@ class Bot:
                 username = message_dict['username']
 
                 # make access levels for commands
-                #is_broadcaster = message_dict['is_broadcaster']
+                print(access_level(message_dict))
 
                 ppi(channel, message, username)
 

@@ -11,7 +11,7 @@ class irc:
 
     def check_for_message(self, b_message):
         message = b_message.decode('utf-8')
-        if message[0] == '@':
+        if message[0] == '@' and 'PRIVMSG' in message:
             arg_regx = "([^=;]*)=([^ ;]*)"
             arg_regx = re.compile(arg_regx, re.UNICODE)
             args = dict(re.findall(arg_regx, message[1:]))

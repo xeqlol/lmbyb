@@ -1,13 +1,13 @@
 # commands headers
-command_headers = {
+commands = {
     '!commands': {
         'limit': 0,
         'argc': 0,
-        'return': 'command'
+        'return': 'function'
     },
 
     '!test': {
         'limit': 0,
-        'return': 'This is a test!'
+        'return': 'yee boi'
     },
 }

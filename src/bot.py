@@ -1,7 +1,7 @@
 import src.lib.irc as irc_
 from src.lib.functions_general import *
-import src.lib.functions_commands as commands
-from src.lib.commands._commands_utils import *
+import src.lib.functions_utils as commands
+from src.lib.commands.command_utils import *
 
 
 class Bot:
@@ -21,8 +21,6 @@ class Bot:
             if len(data) == 0:
                 pp('Connection was lost, reconnecting.')
                 sock = self.irc.get_irc_socket_object()
-
-            #data = str(b_data, 'utf-8')
 
             if config['debug']:
                 print('debug: %s' % data)
@@ -64,7 +62,7 @@ class Bot:
                                      channel
                                      )
 
-                                result = commands.pass_to_function(command, args)
+                                result = commands.pass_to_function('command', command, args)
                                 commands.update_last_used(command, channel)
 
                                 if result:

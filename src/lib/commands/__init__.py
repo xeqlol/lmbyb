@@ -1,14 +1,12 @@
 import os
 import glob
+from src.config.config import *
+from src.lib.commands.command_headers import *
+
 
 __all__ = [os.path.basename(f)[:-3] for f in glob.glob(os.path.dirname(__file__)+'/*.py')]
 
-from src.config.config import *
-from src.lib.commands._command_headers import command_headers
-
-commands = command_headers
-
 for channel in config['channels']:
-    for command in command_headers:
+    for command in commands:
         commands[command][channel] = {}
         commands[command][channel]['last_used'] = 0

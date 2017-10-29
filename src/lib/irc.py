@@ -1,8 +1,8 @@
-import socket, re, time, sys
+import socket, re, time, sys, _thread
 from src.lib.functions_general import *
+import src.lib.timers.timer_headers as timers
+import src.lib.timers.timer_class as timer_class
 import src.config.config as config
-import src.lib.cron as cron
-import _thread
 
 
 class irc:
@@ -83,10 +83,16 @@ class irc:
             sys.exit()
 
         # start threads for channels that have cron messages to run
+        # maybe better to move this to bot.py, idk
         for channel in self.config['channels']:
-            if channel in self.config['cron']:
-                if self.config['cron'][channel]['run_cron']:
-                    _thread.start_new_thread(cron.Cron(self, channel).run, ())
+            allowed_timers = []
+            if 'all' in self.config['timers'][channel]['allowed_timers']:
+                allowed_timers = timers.timers
+            else:
+                allowed_timers = self.config['timers'][channel]['allowed_timers']
+
+            for timer in allowed_timers:
+                _thread.start_new_thread(timer_class.Timer(self, channel, timer).run, ())
 
         self.join_channels(self.channels_to_string(self.config['channels']))
         self.set_cap_requests()

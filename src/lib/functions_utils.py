@@ -1,8 +1,6 @@
+# todo: move commands function to commands folder, fimers function to timers folder
 import time
-
-from src.config.config import *
 from src.lib.commands import *
-#from src.lib.commands_settings import *
 
 import importlib
 
@@ -50,19 +48,22 @@ def check_has_correct_args(message, command):
 
 
 def check_returns_function(command):
-    if commands[command]['return'] == 'command':
+    if commands[command]['return'] == 'function':
         return True
 
 
-def pass_to_function(command, args):
-    command = command.replace('!', '')
+# todo: separate commands and timers functions
+def pass_to_function(type, function, args):
+    if type == 'command':
+        command = function.replace('!', '')
+        module = importlib.import_module('src.lib.commands.%s' % command)
+        function = getattr(module, command)
 
-    module = importlib.import_module('src.lib.commands.%s' % command)
-    function = getattr(module, command)
+    elif type == 'timer':
+        module = importlib.import_module('src.lib.timers.%s' % function)
+        function = getattr(module, function)
 
     if args:
-        # need to reference to src.lib.commands.<command
         return function(args)
     else:
-        # need to reference to src.lib.commands.<command
         return function()

@@ -1,8 +1,12 @@
-import socket, re, time, sys, _thread
-from src.lib.functions_general import *
-import src.lib.timers.timer_headers as timers
-import src.lib.timers.timer_class as timer_class
+import _thread
+import re
+import socket
+import sys
+
 import src.config.config as config
+import src.lib.timers.timer_headers as timers
+import src.lib.timers.timer_utils as timer_utils
+from src.lib.console import *
 
 
 class irc:
@@ -92,7 +96,7 @@ class irc:
                 allowed_timers = self.config['timers'][channel]['allowed_timers']
 
             for timer in allowed_timers:
-                _thread.start_new_thread(timer_class.Timer(self, channel, timer).run, ())
+                _thread.start_new_thread(timer_utils.Timer(self, channel, timer).run, ())
 
         self.join_channels(self.channels_to_string(self.config['channels']))
         self.set_cap_requests()

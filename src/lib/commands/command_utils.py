@@ -1,5 +1,6 @@
 from src.config.config import *
 
+
 def access_level(message_dict):
     level = 0
     if message_dict['is_subscriber']:

@@ -1,7 +1,7 @@
-import src.lib.irc as irc_
-from src.lib.functions_general import *
 import src.lib.functions_utils as commands
+import src.lib.irc as irc_
 from src.lib.commands.command_utils import *
+from src.lib.console import *
 
 
 class Bot:
@@ -14,6 +14,9 @@ class Bot:
         irc = self.irc
         sock = self.socket
         config = self.config
+
+        #set_commands_handler()
+        #set_timers_handler()
 
         while True:
             data = sock.recv(config['socket_buffer_size']).rstrip()

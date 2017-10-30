@@ -1,5 +1,5 @@
 # commands headers
-commands = {
+command_headers = {
     '!commands': {
         'limit': 0,
         'argc': 0,

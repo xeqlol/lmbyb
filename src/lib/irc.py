@@ -9,7 +9,7 @@ import src.lib.timers.timer_utils as timer_utils
 from src.lib.console import *
 
 
-class irc:
+class Irc:
     def __init__(self, config):
         self.config = config
 
@@ -85,18 +85,6 @@ class irc:
         else:
             pp('Login unsuccessful. (hint: make sure your oauth token is set in self.config/self.config.py).', 'error')
             sys.exit()
-
-        # start threads for channels that have cron messages to run
-        # maybe better to move this to bot.py, idk
-        for channel in self.config['channels']:
-            allowed_timers = []
-            if 'all' in self.config['timers'][channel]['allowed_timers']:
-                allowed_timers = timers.timers
-            else:
-                allowed_timers = self.config['timers'][channel]['allowed_timers']
-
-            for timer in allowed_timers:
-                _thread.start_new_thread(timer_utils.Timer(self, channel, timer).run, ())
 
         self.join_channels(self.channels_to_string(self.config['channels']))
         self.set_cap_requests()

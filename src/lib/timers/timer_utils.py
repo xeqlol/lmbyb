@@ -1,18 +1,32 @@
+import _thread
+
 from src.lib.console import *
 from src.lib.functions_utils import *
 from src.lib.timers.timer_headers import *
 
 
-class Timer():
-    def __init__(self, irc, channel, timer_name):
+class TimerHandler():
+    def __init__(self, irc, config):
         self.irc = irc
-        self.channel = channel
-        self.timer_name = timer_name
-        self.interval = timers[timer_name]['interval']
+        self.config = config
 
-    def run(self):
-        time.sleep(self.interval)
+    def handle(self):
+        # start threads for channels that have cron messages to run
+        # maybe better to move this to bot.py, idk
+        for channel in config['channels']:
+            allowed_timers = []
+            if 'all' in config['timers'][channel]['allowed_timers']:
+                allowed_timers = timers
+            else:
+                allowed_timers = config['timers'][channel]['allowed_timers']
+
+            for timer in allowed_timers:
+                _thread.start_new_thread(self.run, (channel, timer))
+
+    def run(self, channel, timer):
+        interval = timers[timer]['interval']
+        time.sleep(interval)
         while True:
-            pbot('[timer] %s' % self.timer_name, self.channel)
-            self.irc.send_message(self.channel, pass_to_function('timer', self.timer_name, None))
-            time.sleep(self.interval)
+            pbot('[timer] %s' % timer, channel)
+            self.irc.send_message(channel, pass_to_function('timer', timer, None))
+            time.sleep(interval)

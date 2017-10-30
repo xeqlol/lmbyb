@@ -1,7 +1,8 @@
 import importlib
 import time
 
-from src.lib.commands import *
+from src.lib.commands.command_headers import *
+from src.lib.timers.timer_headers import *
 
 
 def is_valid_command(command):
@@ -46,10 +47,14 @@ def check_has_correct_args(message, command):
         return True
 
 
-def check_returns_function(command):
-    if command_headers[command]['return'] == 'function':
+def check_returns_function(type, function):
+    if type == 'command':
+        _dict = command_headers
+    elif type == 'timer':
+        _dict = timer_headers
+    if _dict[function]['return'] == 'function':
         return True
-
+    return False
 
 # todo: separate commands and timers functions
 def pass_to_function(type, function, args):

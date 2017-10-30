@@ -10,13 +10,13 @@ class CommandHandler():
 
     def handle(self):
         while True:
-            data = self.sock.recv(config['socket_buffer_size']).rstrip()
+            data = self.sock.recv(self.config['socket_buffer_size']).rstrip()
 
             if len(data) == 0:
                 pp('Connection was lost, reconnecting.')
                 sock = self.irc.get_irc_socket_object()
 
-            if config['debug']:
+            if self.config['debug']:
                 print('debug: %s' % data)
 
             # check for ping, reply with pong

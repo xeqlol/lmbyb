@@ -49,12 +49,11 @@ def check_has_correct_args(message, command):
 
 def check_returns_function(type, function):
     if type == 'command':
-        _dict = command_headers
+        return command_headers[function]['return'] == 'function'
     elif type == 'timer':
-        _dict = timer_headers
-    if _dict[function]['return'] == 'function':
-        return True
-    return False
+        return timer_headers[function]['return'] == 'function'
+    else:
+        return False
 
 # todo: separate commands and timers functions
 def pass_to_function(type, function, args):

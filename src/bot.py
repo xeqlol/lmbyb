@@ -1,8 +1,5 @@
-import src.lib.functions_utils as commands
 import src.lib.irc as irc_
 from src.lib.commands.command_utils import *
-from src.lib.commands.command_utils import *
-from src.lib.console import *
 from src.lib.timers.timer_utils import *
 
 

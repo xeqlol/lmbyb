@@ -1,11 +1,8 @@
-import _thread
 import re
 import socket
 import sys
 
 import src.config.config as config
-import src.lib.timers.timer_headers as timers
-import src.lib.timers.timer_utils as timer_utils
 from src.lib.console import *
 
 

@@ -1,5 +1,6 @@
-import src.lib.functions_utils as commands
+import src.lib.common_utils as commands
 from src.lib.timers.timer_utils import *
+from src.config.config import *
 
 
 class CommandHandler():
@@ -35,19 +36,19 @@ class CommandHandler():
                 ppi(channel, message, username)
 
                 # check if message is a command with no arguments
-                if commands.is_valid_command(message) or commands.is_valid_command(message.split(' ')[0]):
+                if is_valid_command(message) or is_valid_command(message.split(' ')[0]):
                     command = message
 
                     if commands.check_returns_function(command.split(' ')[0]):
-                        if commands.check_has_correct_args(command, command.split(' ')[0]):
+                        if check_has_correct_args(command, command.split(' ')[0]):
                             args = command.split(' ')
                             del args[0]
 
                             command = command.split(' ')[0]
 
-                            if commands.is_on_cooldown(command, channel):
+                            if is_on_cooldown(command, channel):
                                 pbot('Command is on cooldown. (%s) (%s) (%ss remaining)' % (
-                                    command, username, commands.get_cooldown_remaining(command, channel)),
+                                    command, username, get_cooldown_remaining(command, channel)),
                                      channel
                                      )
                             else:
@@ -57,7 +58,7 @@ class CommandHandler():
                                      )
 
                                 result = commands.pass_to_function('command', command, args)
-                                commands.update_last_used(command, channel)
+                                update_last_used(command, channel)
 
                                 if result:
                                     resp = '@%s > %s' % (username, result)
@@ -65,24 +66,65 @@ class CommandHandler():
                                     self.irc.send_message(channel, resp)
 
                     else:
-                        if commands.is_on_cooldown(command, channel):
+                        if is_on_cooldown(command, channel):
                             pbot('Command is on cooldown. (%s) (%s) (%ss remaining)' % (
-                                command, username, commands.get_cooldown_remaining(command, channel)),
+                                command, username, get_cooldown_remaining(command, channel)),
                                  channel
                                  )
-                        elif commands.check_has_return(command):
+                        elif check_has_return(command):
                             pbot('Command is valid and not on cooldown. (%s) (%s)' % (
                                 command, username),
                                  channel
                                  )
-                            commands.update_last_used(command, channel)
+                            update_last_used(command, channel)
 
-                            resp = '@%s > %s' % (username, commands.get_return(command))
-                            commands.update_last_used(command, channel)
+                            resp = '@%s > %s' % (username, get_return(command))
+                            update_last_used(command, channel)
 
                             pbot(resp, channel)
                             self.irc.send_message(channel, resp)
 
+
+def is_valid_command(command):
+    if command in command_headers:
+        return True
+
+
+def update_last_used(command, channel):
+    command_headers[command][channel]['last_used'] = time.time()
+
+
+def get_command_limit(command):
+    return command_headers[command]['limit']
+
+
+def is_on_cooldown(command, channel):
+    if time.time() - command_headers[command][channel]['last_used'] < command_headers[command]['limit']:
+        return True
+
+
+def get_cooldown_remaining(command, channel):
+    return round(command_headers[command]['limit'] - (time.time() - command_headers[command][channel]['last_used']))
+
+
+def check_has_return(command):
+    if command_headers[command]['return'] and command_headers[command]['return'] != 'command':
+        return True
+
+
+def get_return(command):
+    return command_headers[command]['return']
+
+
+def check_has_args(command):
+    if 'argc' in command_headers[command]:
+        return True
+
+
+def check_has_correct_args(message, command):
+    message = message.split(' ')
+    if len(message) - 1 == command_headers[command]['argc']:
+        return True
 
 def access_level(message_dict):
     level = 0

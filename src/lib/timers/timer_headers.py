@@ -1,15 +1,18 @@
 # timers headers
 timer_headers = {
     'test_timer': {
-        'interval': 5, #seconds
+        'interval': 10, #seconds
+        'sequential': False,
         'return': 'function'
     },
     'test_timer_2': {
-        'interval': 10,
+        'interval': 2,
+        'sequential': True,
         'return': 'function'
     },
-    'hoe_hoe_motherfucker': {
-        'interval': 3,
-        'return': 'HOE HOE MOTHERFUCKER'
+    'sequential_timer_2': {
+        'interval': 2,
+        'sequential': True,
+        'return': 'sequential timer 2'
     },
 }

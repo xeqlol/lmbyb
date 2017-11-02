@@ -12,7 +12,7 @@ def check_returns_function(type, function):
     else:
         return False
 
-# todo: separate commands and timers functions
+
 def pass_to_function(type, function, args):
     if type == 'command':
         command = function.replace('!', '')

@@ -4,6 +4,7 @@ import itertools
 from src.lib.console import *
 from src.lib.common_utils import *
 from src.lib.timers.timer_headers import *
+from src.lib.limiter import *
 
 
 class TimerHandler():
@@ -22,14 +23,14 @@ class TimerHandler():
                 allowed_timers = self.config['timers'][channel]['allowed_timers']
 
             for timer in allowed_timers:
-                if not allowed_timers[timer]['sequential']:
-                    _thread.start_new_thread(self.run, (channel, timer))
+                if not timer_headers[timer]['sequential']:
+                    _thread.start_new_thread(self.run_non_sequential_timer, (channel, timer))
                 else:
                     allowed_sequential_timers.append(timer)
             if len(allowed_sequential_timers) > 0:
                 _thread.start_new_thread(self.run_sequential_timers, (channel, allowed_sequential_timers))
 
-    def run(self, channel, timer):
+    def run_non_sequential_timer(self, channel, timer):
         interval = timer_headers[timer]['interval']
         time.sleep(interval)
         while True:
@@ -47,9 +48,12 @@ class TimerHandler():
 
 
 def handle_function(irc, timer, channel):
-    pbot('[timer] %s' % timer, channel)
-    if check_returns_function('timer', timer):
-        message = pass_to_function('timer', timer, None)
-    else:
-        message = timer_headers[timer]['return']
-    irc.send_message(channel, message)
+    available_message_count = MessageLimiter.available_messages_count()
+    if available_message_count > 0:
+        pbot('{0} timer handled. Available messages count: {1}'.format(timer, available_message_count), available_message_count)
+        if check_returns_function('timer', timer):
+            message = pass_to_function('timer', timer, None)
+        else:
+            message = timer_headers[timer]['return']
+        irc.send_message(channel, message)
+        MessageLimiter.handle_message_sent()

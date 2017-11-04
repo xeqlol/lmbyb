@@ -62,7 +62,6 @@ class Irc:
     def get_irc_socket_object(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(10)
-
         self.sock = sock
 
         try:

@@ -1,6 +1,6 @@
 import src.lib.common_utils as commands
+
 from src.lib.timers.timer_utils import *
-from src.config.config import *
 
 
 class CommandHandler():
@@ -38,51 +38,53 @@ class CommandHandler():
                 # check if message is a command with no arguments
                 if is_valid_command(message) or is_valid_command(message.split(' ')[0]):
                     command = message
+                    if MessageLimiter.available_messages_count() > 0:
+                        if check_returns_function('command', command.split(' ')[0]):
+                            if check_has_correct_args(command, command.split(' ')[0]):
+                                args = command.split(' ')
+                                del args[0]
 
-                    if commands.check_returns_function(command.split(' ')[0]):
-                        if check_has_correct_args(command, command.split(' ')[0]):
-                            args = command.split(' ')
-                            del args[0]
+                                command = command.split(' ')[0]
 
-                            command = command.split(' ')[0]
+                                if is_on_cooldown(command, channel):
+                                    pbot('Command is on cooldown. (%s) (%s) (%ss remaining)' % (
+                                        command, username, get_cooldown_remaining(command, channel)),
+                                         channel
+                                         )
+                                else:
+                                    pbot('Command is valid an not on cooldown. (%s) (%s)' % (
+                                        command, username),
+                                         channel
+                                         )
 
+                                    result = commands.pass_to_function('command', command, args)
+                                    update_last_used(command, channel)
+
+                                    if result:
+                                        resp = '@%s > %s' % (username, result)
+                                        pbot(resp, channel)
+                                        self.irc.send_message(channel, resp)
+                                        MessageLimiter.handle_message_sent()
+
+                        else:
                             if is_on_cooldown(command, channel):
                                 pbot('Command is on cooldown. (%s) (%s) (%ss remaining)' % (
                                     command, username, get_cooldown_remaining(command, channel)),
                                      channel
                                      )
-                            else:
-                                pbot('Command is valid an not on cooldown. (%s) (%s)' % (
+                            elif check_has_return(command):
+                                pbot('Command is valid and not on cooldown. (%s) (%s)' % (
                                     command, username),
                                      channel
                                      )
-
-                                result = commands.pass_to_function('command', command, args)
                                 update_last_used(command, channel)
 
-                                if result:
-                                    resp = '@%s > %s' % (username, result)
-                                    pbot(resp, channel)
-                                    self.irc.send_message(channel, resp)
+                                resp = '@%s > %s' % (username, get_return(command))
+                                update_last_used(command, channel)
 
-                    else:
-                        if is_on_cooldown(command, channel):
-                            pbot('Command is on cooldown. (%s) (%s) (%ss remaining)' % (
-                                command, username, get_cooldown_remaining(command, channel)),
-                                 channel
-                                 )
-                        elif check_has_return(command):
-                            pbot('Command is valid and not on cooldown. (%s) (%s)' % (
-                                command, username),
-                                 channel
-                                 )
-                            update_last_used(command, channel)
-
-                            resp = '@%s > %s' % (username, get_return(command))
-                            update_last_used(command, channel)
-
-                            pbot(resp, channel)
-                            self.irc.send_message(channel, resp)
+                                pbot(resp, channel)
+                                self.irc.send_message(channel, resp)
+                                MessageLimiter.handle_message_sent()
 
 
 def is_valid_command(command):

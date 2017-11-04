@@ -1,6 +1,7 @@
 import src.lib.irc as irc_
 from src.lib.commands.command_utils import *
 from src.lib.timers.timer_utils import *
+import src.lib.limiter as limiter
 
 
 class Bot:

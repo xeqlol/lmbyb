@@ -30,9 +30,6 @@ class CommandHandler():
                 message = message_dict['message']
                 username = message_dict['username']
 
-                # make access levels for commands
-                print(access_level(message_dict))
-
                 ppi(channel, message, username)
 
                 # check if message is a command with no arguments
@@ -128,6 +125,7 @@ def check_has_correct_args(message, command):
     message = message.split(' ')
     if len(message) - 1 == command_headers[command]['argc']:
         return True
+
 
 def access_level(message_dict):
     level = 0

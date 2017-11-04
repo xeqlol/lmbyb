@@ -50,7 +50,7 @@ class TimerHandler():
 def handle_function(irc, timer, channel):
     available_message_count = MessageLimiter.available_messages_count()
     if available_message_count > 0:
-        pbot('{0} timer handled. Available messages count: {1}'.format(timer, available_message_count), available_message_count)
+        pbot('Timer "{0}" is handled. Available messages count: {1}'.format(timer, available_message_count), channel)
         if check_returns_function('timer', timer):
             message = pass_to_function('timer', timer, None)
         else:

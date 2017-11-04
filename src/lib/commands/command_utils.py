@@ -18,7 +18,7 @@ class CommandHandler():
                 sock = self.irc.get_irc_socket_object()
 
             if self.config['debug']:
-                print('debug: %s' % data)
+                print('debug: {0}'.format(data))
 
             # check for ping, reply with pong
             self.irc.check_for_ping(data)
@@ -38,7 +38,8 @@ class CommandHandler():
                 # check if message is a command with no arguments
                 if is_valid_command(message) or is_valid_command(message.split(' ')[0]):
                     command = message
-                    if MessageLimiter.available_messages_count() > 0:
+                    available_message_count = MessageLimiter.available_messages_count()
+                    if available_message_count > 0:
                         if check_returns_function('command', command.split(' ')[0]):
                             if check_has_correct_args(command, command.split(' ')[0]):
                                 args = command.split(' ')
@@ -47,13 +48,13 @@ class CommandHandler():
                                 command = command.split(' ')[0]
 
                                 if is_on_cooldown(command, channel):
-                                    pbot('Command is on cooldown. (%s) (%s) (%ss remaining)' % (
+                                    pbot('Command "{0}" from {1} is on cooldown. ({2}s remaining)'.format(
                                         command, username, get_cooldown_remaining(command, channel)),
                                          channel
                                          )
                                 else:
-                                    pbot('Command is valid an not on cooldown. (%s) (%s)' % (
-                                        command, username),
+                                    pbot('Command "{0}" from {1} is valid and not on cooldown. Available messages count: {2}'.format(
+                                        command, username, available_message_count),
                                          channel
                                          )
 
@@ -61,25 +62,25 @@ class CommandHandler():
                                     update_last_used(command, channel)
 
                                     if result:
-                                        resp = '@%s > %s' % (username, result)
+                                        resp = '@{0} > {1}'.format(username, result)
                                         pbot(resp, channel)
                                         self.irc.send_message(channel, resp)
                                         MessageLimiter.handle_message_sent()
 
                         else:
                             if is_on_cooldown(command, channel):
-                                pbot('Command is on cooldown. (%s) (%s) (%ss remaining)' % (
+                                pbot('Command "{0}" from {1} is on cooldown. ({2}s remaining)'.format(
                                     command, username, get_cooldown_remaining(command, channel)),
                                      channel
                                      )
                             elif check_has_return(command):
-                                pbot('Command is valid and not on cooldown. (%s) (%s)' % (
-                                    command, username),
+                                pbot('Command "{0}" from {1} is valid and not on cooldown. Available messages count: {2}'.format(
+                                    command, username, available_message_count),
                                      channel
                                      )
                                 update_last_used(command, channel)
 
-                                resp = '@%s > %s' % (username, get_return(command))
+                                resp = '@{0} > {1}'.format(username, get_return(command))
                                 update_last_used(command, channel)
 
                                 pbot(resp, channel)

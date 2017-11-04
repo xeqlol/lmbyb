@@ -56,8 +56,8 @@ class Irc:
 
     def send_message(self, channel, message):
         if config.config['me_mod']:
-            message = '/me %s' % message
-        self.sock.send(bytes('PRIVMSG %s :%s\n' % (channel, message), 'utf-8'))
+            message = '/me {0}'.format(message)
+        self.sock.send(bytes('PRIVMSG {0} :{1}\n'.format(channel, message), 'utf-8'))
 
     def get_irc_socket_object(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -67,14 +67,14 @@ class Irc:
         try:
             sock.connect((self.config['server'], self.config['port']))
         except:
-            pp('Cannot connect to server (%s:%s).' % (self.config['server'], self.config['port']), 'error')
+            pp('Cannot connect to server ({0}:{1}).'.format(self.config['server'], self.config['port']), 'error')
             sys.exit()
 
         sock.settimeout(None)
 
-        sock.send(bytes('USER %s\r\n' % self.config['username'], 'utf-8'))
-        sock.send(bytes('PASS %s\r\n' % self.config['oauth_password'], 'utf-8'))
-        sock.send(bytes('NICK %s\r\n' % self.config['username'], 'utf-8'))
+        sock.send(bytes('USER {0}\r\n'.format(self.config['username']), 'utf-8'))
+        sock.send(bytes('PASS {0}\r\n'.format(self.config['oauth_password']), 'utf-8'))
+        sock.send(bytes('NICK {0}\r\n'.format(self.config['username']), 'utf-8'))
 
         if self.check_login_status(sock.recv(1024)):
             pp('Login successful.')
@@ -91,13 +91,13 @@ class Irc:
         return ','.join(channel_list)
 
     def join_channels(self, channels):
-        pp('Joining channels %s.' % channels)
-        self.sock.send(bytes('JOIN %s\r\n' % channels, 'utf-8'))
+        pp('Joining channels {0}.'.format(channels))
+        self.sock.send(bytes('JOIN {0}\r\n'.format(channels), 'utf-8'))
         pp('Joined channels.')
 
     def leave_channels(self, channels):
-        pp('Leaving chanels %s,' % channels)
-        self.sock.send(bytes('PART %s\r\n' % channels, 'utf-8'))
+        pp('Leaving chanels {0},'.format(channels))
+        self.sock.send(bytes('PART {0}\r\n'.format(channels), 'utf-8'))
         pp('Left channels.')
 
     def set_cap_requests(self):

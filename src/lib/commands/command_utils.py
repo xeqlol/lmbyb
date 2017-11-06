@@ -14,11 +14,11 @@ class CommandHandler():
             data = self.sock.recv(self.config['socket_buffer_size']).rstrip()
 
             if len(data) == 0:
-                pp('Connection was lost, reconnecting.')
+                pp('Connection was lost, reconnecting.', 'ERROR')
                 sock = self.irc.get_irc_socket_object()
 
             if self.config['debug']:
-                print('debug: {0}'.format(data))
+                pp(data, 'DEBUG')
 
             # check for ping, reply with pong
             self.irc.check_for_ping(data)
@@ -50,7 +50,7 @@ class CommandHandler():
                                          channel
                                          )
                                 else:
-                                    pbot('Command "{0}" from {1} is valid and not on cooldown. Available messages count: {2}'.format(
+                                    pbot('Command "{0}" from {1} is valid and not on cooldown. Available messages count: {2}.'.format(
                                         command, username, available_message_count),
                                          channel
                                          )
@@ -71,7 +71,7 @@ class CommandHandler():
                                      channel
                                      )
                             elif check_has_return(command):
-                                pbot('Command "{0}" from {1} is valid and not on cooldown. Available messages count: {2}'.format(
+                                pbot('Command "{0}" from {1} is valid and not on cooldown. Available messages count: {2}.'.format(
                                     command, username, available_message_count),
                                      channel
                                      )

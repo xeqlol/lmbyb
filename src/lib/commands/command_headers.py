@@ -10,4 +10,8 @@ command_headers = {
         'limit': 0,
         'return': 'yee boi'
     },
+    '!jaber': {
+        'limit': 0,
+        'return': 'jiberjaber is totally lalka 4Head '
+    },
 }
